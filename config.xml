@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- config.xml reference: https://build.phonegap.com/docs/config-xml -->
+<widget xmlns = "http://www.w3.org/ns/widgets"
+        xmlns:gap = "http://phonegap.com/ns/1.0"
+        id = "ImmobilienApp"
+        version = "1.0">
+
+    <name>ImmobilienApp</name>
+
+    <description>
+        Von der Webapplikation zur hybriden App
+    </description>
+
+    <author>immoMobile</author>
+
+    <!-- ####################### -->
+    <!-- Icon einbinden-->
+    <!-- http://docs.build.phonegap.com/en_US/configuring_icons_and_splash.md.html#Icons%20and%20Splash%20Screens -->
+    <!-- ####################### -->
+    <icon src="img/icon.png" />
+
+    <preference name="phonegap-version" value="3.5.0" />
+
+    <!-- ####################### -->
+    <!-- Plug-Ins einbinden -->
+    <!-- https://build.phonegap.com/plugins -->
+    <!-- ####################### -->
+
+	<gap:plugin name="org.apache.cordova.camera" version="0.3.2" />
+    <gap:plugin name="org.apache.cordova.media-capture" version="0.3.3" />
+	<gap:plugin name="org.apache.cordova.media" version="0.2.13" />
+    <gap:plugin name="com.phonegap.plugins.barcodescanner" version="2.2.0" />
+
+
+    <!-- Wildcard fuer Berechtigung zum laden externer Ressourcen -->
+    <!-- wie z.B. Google Maps API -->
+    <access origin="*" />
+
+</widget>

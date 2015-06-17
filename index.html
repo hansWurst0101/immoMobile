@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- utf-8 -->
+    <meta charset="utf-8">
+    <!-- stop zoom -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- copyrights -->
+    <meta name="author" content="immoMobile" />
+
+    <!-- favicon -->
+    <link rel="shortcut icon" href="img/icon.png">
+
+    <title>Immobilien-App: immoMobile - Prototyp</title>
+
+    <!-- 1. css jquery Mobile -->
+    <link rel="stylesheet" href="lib/jquery/jquery.mobile-1.4.2.min.css" />
+
+    <!-- 2. js jquery -->
+    <script type="text/javascript" src="lib/jquery/jquery-2.1.1.min.js"></script>
+    <script type="text/javascript" src="lib/jquery/jquery.mobile-1.4.2.min.js"></script>
+
+    <!-- 3. js external -->
+    <script type="text/javascript" src="https://maps.google.com/maps/api/js?sensor=true"></script> <!-- Google-Maps -->
+
+    <!-- 4. js Phonegap -->
+    <script type="text/javascript" src="phonegap.js"></script>
+
+    <!-- Eigene JS-Bibliotheken -->
+
+    <!-- 4. Model (logic) -->
+    <script type="text/javascript" src="js/model.js"></script>
+    <!-- 5. events -->
+    <script type="text/javascript" src="js/controller.js"></script>
+
+    <script type="text/javascript" src="js/barcodeScanner.js"></script>        <!-- barcode-Funktionen -->
+
+    <script type="text/javascript" src="js/foto.js"></script>
+
+</head>
+
+<body>
+
+<!--------------------------------------------------------------------------------------------------------->
+<!-- PAGE INDEX -->
+<!--------------------------------------------------------------------------------------------------------->
+    <section data-role="page" id="page-index" data-title="immoMobile - Startseite | page-index">
+
+        <!---------------------------------------------------------------------------------------------->
+        <!-- HEADER // headline | image -->
+        <!---------------------------------------------------------------------------------------------->
+        <header data-role="header" class="ui-header ui-bar-c">
+
+            <h1>Immobilien-App "immoMobile"</h1>
+            <img src="img/icon.png" width="40" class="ui-btn-right"/>
+
+        </header><!-- /header -->
+
+        <!---------------------------------------------------------------------------------------------->
+        <!-- CONTENT -->
+        <!---------------------------------------------------------------------------------------------->
+        <article class="ui-content">
+
+            <img src="img/icon.png" width="150" />
+
+            <p>
+                <a href="#page-immobilie" data-role="button">Immobilie suchen</a>
+                <a href="#page-barcode" data-role="button">Barcode scannen</a>
+                <a href="#page-registrierung" data-role="button">Registrierung für Verkäufer</a>
+                <a href="#page-impressum" data-role="button">Impressum</a>
+            </p>
+
+        </article><!-- /content -->
+
+        <!---------------------------------------------------------------------------------------------->
+        <!-- FOOTER -->
+        <!---------------------------------------------------------------------------------------------->
+        <footer data-role="footer" class="ui-footer ui-bar-c" role="contentinfo">
+
+            <h6>&copy; 2015 by immoMobile</h6>
+
+        </footer><!-- /footer -->
+
+    </section><!-- /page -->
+
+<!--------------------------------------------------------------------------------------------------------->
+<!-- PAGE IMMOBILIE -->
+<!--------------------------------------------------------------------------------------------------------->
+    <section data-role="page" id="page-immobilie" data-title="immoMobile - Details | page-immobilie">
+
+        <!---------------------------------------------------------------------------------------------->
+        <!-- HEADER -->
+        <!---------------------------------------------------------------------------------------------->
+        <header data-role="header" class="ui-header ui-bar-c">
+
+            <h1>Immobilie</h1>
+            <img src="img/icon.png" width="40" class="ui-btn-right"/>
+            <a href="#" data-icon="back" data-rel="back">Zur&uuml;ck</a>
+
+        </header><!-- /header -->
+
+        <!---------------------------------------------------------------------------------------------->
+        <!-- CONTENT -->
+        <!---------------------------------------------------------------------------------------------->
+        <article class="ui-content">
+
+            <p><strong><big>Suchprofil definieren:</big></strong></p>
+
+            <form>
+
+                <div data-role="fieldcontain">
+                    <fieldset data-role="controlgroup" data-type="horizontal">
+
+                        <legend>Typ der Immobilie:</legend>
+                            <input type="radio" name="radioTyp" id="radioHaus" value="Haus" />
+                            <label for="radioHaus">Haus</label>
+
+                            <input type="radio" name="radioTyp" id="radioWohnung" value="Wohnung" />
+                            <label for="radioWohnung">Wohnung</label>
+                    </fieldset>
+                </div>
+
+                <div class="ui-field-contain">
+                    <label for="mindestwohnflaeche">Mindestwohnflaeche (in m²):</label>
+                    <input type="text" name="mindestwohnflaeche" id="mindestwohnflaeche" value="">
+                </div>
+
+                <div class="ui-field-contain">
+                    <label for="maxPreis">maximaler Preis (in €):</label>
+                    <input type="text" name="maxPreis" id="maxPreis" value="">
+                </div>
+
+                <button type="button" id="suchen">Suchen</button>
+            </form>
+            <br>
+
+            <h2>Immobilien:</h2>
+
+                <span class="anzahlErgebnisse"></span>
+
+                <p>
+                    <strong>Typ:</strong> <span class="typ"></span>
+                </p>
+                <p>
+                    <strong>Wohnfläche:</strong> <span class="wohnflaeche"></span>
+                </p>
+                <p>
+                    <strong>Preis:</strong> <span class="preis"></span>
+                </p>
+                <p>
+                    <strong>Adresse:</strong> <span class="adresse"></span>
+                </p>
+                <p>
+                    <strong>Entfernung:</strong> <span class="entfernung"></span>
+                </p>
+                <p>
+                    <span class="image"></span>
+                </p>
+
+                <button id="previous" data-role="button">zur&uuml;ck</button>
+                <button id="next" data-role="button">weiter</button>
+
+            <!---------------------------------------------------------------->
+            <!-- KARTEANSICHT -->
+            <!---------------------------------------------------------------->
+
+            <h3>Kartenansicht</h3>
+
+            <div id="karteAusgabe" style="height: 500px; width: 500px;"></div>
+            <p id="adresseAusgabe"></p>
+
+        </article><!-- /content -->
+
+        <!---------------------------------------------------------------------------------------------->
+        <!-- FOOTER -->
+        <!---------------------------------------------------------------------------------------------->
+        <footer data-role="footer" class="ui-footer ui-bar-c" role="contentinfo">
+
+            <h6>&copy; 2015 by immoMobile</h6>
+
+        </footer><!-- /footer -->
+
+    </section><!-- /page -->
+
+<!--------------------------------------------------------------------------------------------------------->
+<!-- PAGE Barcode -->
+<!--------------------------------------------------------------------------------------------------------->
+<section data-role="page" id="page-barcode" data-title="immoMobile - Barcode | page-barcode">
+
+    <!---------------------------------------------------------------------------------------------->
+    <!-- HEADER // link | headline -->
+    <!---------------------------------------------------------------------------------------------->
+    <header data-role="header" class="ui-bar-c">
+
+        <h1>Barcode</h1>
+        <img src="img/icon.png" width="40" class="ui-btn-right"/>
+        <a href="#" data-icon="back" data-rel="back">Zur&uuml;ck</a>
+
+    </header><!-- /header -->
+
+    <!---------------------------------------------------------------------------------------------->
+    <!-- CONTENT -->
+    <!---------------------------------------------------------------------------------------------->
+    <article class="ui-content">
+
+        <h3>Barcode scannen</h3>
+
+        <button data-role="button" id="barcodeButton">Barcode scannen</button>
+        <br />
+
+
+        <h2>Immobilien:</h2>
+
+        <span class="anzahlErgebnisse"></span>
+
+        <p>
+            <strong>Typ:</strong> <span class="typ"></span>
+        </p>
+        <p>
+            <strong>Wohnfläche:</strong> <span class="wohnflaeche"></span>
+        </p>
+        <p>
+            <strong>Preis:</strong> <span class="preis"></span>
+        </p>
+        <p>
+            <strong>Adresse:</strong> <span class="adresse"></span>
+        </p>
+        <p>
+            <strong>Entfernung:</strong> <span class="entfernung"></span>
+        </p>
+        <p>
+            <span class="image"></span>
+        </p>
+
+    </article><!-- /content -->
+
+    <!---------------------------------------------------------------------------------------------->
+    <!-- FOOTER -->
+    <!---------------------------------------------------------------------------------------------->
+    <footer data-role="footer" class="ui-footer ui-bar-c" role="contentinfo">
+
+        <h6>&copy; 2015 by immoMobile</h6>
+
+    </footer><!-- /footer -->
+
+</section><!-- /page -->
+
+<!--------------------------------------------------------------------------------------------------------->
+<!-- PAGE REGISTRIERUNG -->
+<!--------------------------------------------------------------------------------------------------------->
+<section data-role="page" id="page-registrierung" data-title="immoMobile - Registrierung | page-registrierung">
+
+    <!---------------------------------------------------------------------------------------------->
+    <!-- HEADER -->
+    <!---------------------------------------------------------------------------------------------->
+    <header data-role="header" class="ui-header ui-bar-c">
+
+        <h1>Registrierung</h1>
+        <img src="img/icon.png" width="40" class="ui-btn-right"/>
+        <a href="#" data-icon="back" data-rel="back">Zur&uuml;ck</a>
+
+    </header><!-- /header -->
+
+    <!---------------------------------------------------------------------------------------------->
+    <!-- CONTENT -->
+    <!---------------------------------------------------------------------------------------------->
+    <article class="ui-content">
+
+        <p><strong>Verkäufer von Immobilien hier bitte mit Name und Adresse registrieren. Danach können Sie
+            Immobilien einstellen.</strong></p>
+
+
+    </article><!-- /content -->
+
+    <!---------------------------------------------------------------------------------------------->
+    <!-- FOOTER -->
+    <!---------------------------------------------------------------------------------------------->
+    <footer data-role="footer" class="ui-footer ui-bar-c" role="contentinfo">
+
+        <h6>&copy; 2015 by immoMobile</h6>
+
+    </footer><!-- /footer -->
+
+</section><!-- /page -->
+
+
+<!--------------------------------------------------------------------------------------------------------->
+<!-- PAGE IMPRESSUM -->
+<!--------------------------------------------------------------------------------------------------------->
+<section data-role="page" id="page-impressum" data-title="immoMobile - Impressum | page-impressum">
+
+    <!---------------------------------------------------------------------------------------------->
+    <!-- HEADER -->
+    <!---------------------------------------------------------------------------------------------->
+    <header data-role="header" class="ui-header ui-bar-c">
+
+        <h1>Impressum</h1>
+        <img src="img/icon.png" width="40" class="ui-btn-right"/>
+        <a href="#" data-icon="back" data-rel="back">Zur&uuml;ck</a>
+
+    </header><!-- /header -->
+
+    <!---------------------------------------------------------------------------------------------->
+    <!-- CONTENT -->
+    <!---------------------------------------------------------------------------------------------->
+    <article class="ui-content">
+
+        <div>
+            <h2>Impressum</h2>
+                <p>
+                    immoMobile<br />
+                    Badstraße 24<br />
+                    77652 Offenburg
+                </p>
+                <p>
+                    Telefon: (0781) 205-0<br />
+                    Telefax: (0781) 205-333<br />
+                    E-Mail: <a href="mailto:info@immoMobile.com">info@immoMobile.com</a><br />
+                </p><br /><br />
+
+            <h2>Disclaimer – rechtliche Hinweise</h2>
+                    § 1 Haftungsbeschränkung<br />
+                    Die Inhalte dieser App werden mit größtmöglicher Sorgfalt erstellt. Der
+                    Anbieter übernimmt jedoch keine Gewähr für die Richtigkeit, Vollständigkeit
+                    und Aktualität der bereitgestellten Inhalte. Die Nutzung der Inhalte der
+                    App erfolgt auf eigene Gefahr des Nutzers. Namentlich gekennzeichnete
+                    Beiträge geben die Meinung des jeweiligen Autors und nicht immer die Meinung
+                    des Anbieters wieder. Mit der reinen Nutzung der App des Anbieters kommt
+                    keinerlei Vertragsverhältnis zwischen dem Nutzer und dem Anbieter zustande.
+                    <br /><br />
+                    § 2 Externe Links<br />
+                    Diese App enthält Verknüpfungen zu Websites Dritter ("externe Links").
+                    Diese Websites unterliegen der Haftung der jeweiligen Betreiber. Der
+                    Anbieter hat bei der erstmaligen Verknüpfung der externen Links die fremden
+                    Inhalte daraufhin überprüft, ob etwaige Rechtsverstöße bestehen. Zu dem
+                    Zeitpunkt waren keine Rechtsverstöße ersichtlich. Der Anbieter hat keinerlei
+                    Einfluss auf die aktuelle und zukünftige Gestaltung und auf die Inhalte der
+                    verknüpften Seiten. Das Setzen von externen Links bedeutet nicht, dass sich
+                    der Anbieter die hinter dem Verweis oder Link liegenden Inhalte zu Eigen
+                    macht. Eine ständige Kontrolle der externen Links ist für den Anbieter ohne
+                    konkrete Hinweise auf Rechtsverstöße nicht zumutbar. Bei Kenntnis von
+                    Rechtsverstößen werden jedoch derartige externe Links unverzüglich gelöscht.
+                    <br /><br />
+                    § 3 Urheber- und Leistungsschutzrechte<br />
+                    Die auf dieser App veröffentlichten Inhalte unterliegen dem deutschen
+                    Urheber- und Leistungsschutzrecht. Jede vom deutschen Urheber- und
+                    Leistungsschutzrecht nicht zugelassene Verwertung bedarf der vorherigen
+                    schriftlichen Zustimmung des Anbieters oder jeweiligen Rechteinhabers. Dies
+                    gilt insbesondere für Vervielfältigung, Bearbeitung, Übersetzung,
+                    Einspeicherung, Verarbeitung bzw. Wiedergabe von Inhalten in Datenbanken
+                    oder anderen elektronischen Medien und Systemen. Inhalte und Rechte Dritter
+                    sind dabei als solche gekennzeichnet. Die unerlaubte Vervielfältigung oder
+                    Weitergabe einzelner Inhalte oder kompletter Seiten ist nicht gestattet und
+                    strafbar. Lediglich die Herstellung von Kopien und Downloads für den
+                    persönlichen, privaten und nicht kommerziellen Gebrauch ist erlaubt.
+                    <br /><br />
+                    Die Darstellung dieser App in fremden Frames ist nur mit schriftlicher
+                    Erlaubnis zulässig.
+                    <br /><br />
+                    § 4 Besondere Nutzungsbedingungen<br />
+                    Soweit besondere Bedingungen für einzelne Nutzungen dieser App von den
+                    vorgenannten Paragraphen abweichen, wird an entsprechender Stelle
+                    ausdrücklich darauf hingewiesen. In diesem Falle gelten im jeweiligen
+                    Einzelfall die besonderen Nutzungsbedingungen.<br />
+                <p>
+                    Quelle: <a href="http://www.impressum-recht.de/impressum-generator/">Impressum-Generator</a>
+                </p><br /><br />
+            <h2>Datenschutzerklärung:</h2>
+                <p>
+                    <strong>Datenschutz</strong><br />
+                    Nachfolgend möchten wir Sie über unsere Datenschutzerklärung informieren. Sie finden hier Informationen über die Erhebung und
+                    Verwendung persönlicher Daten bei der Nutzung unserer App. Wir beachten dabei das für Deutschland geltende Datenschutzrecht.
+                    Sie können diese Erklärung jederzeit auf unserer App abrufen.
+                    <br /><br />
+                    Wir weisen ausdrücklich darauf hin, dass die Datenübertragung im Internet (z.B. bei der Kommunikation per E-Mail) Sicherheitslücken aufweisen
+                    und nicht lückenlos vor dem Zugriff durch Dritte geschützt werden kann.
+                    <br /><br />
+                    Die Verwendung der Kontaktdaten unseres Impressums zur gewerblichen Werbung ist ausdrücklich nicht erwünscht, es sei denn wir hatten zuvor
+                    unsere schriftliche Einwilligung erteilt oder es besteht bereits eine Geschäftsbeziehung. Der Anbieter und alle auf dieser App
+                    genannten Personen widersprechen hiermit jeder kommerziellen Verwendung und Weitergabe ihrer Daten.
+                    <br /><br />
+                    <strong>Personenbezogene Daten</strong>
+                    <br />
+                    Sie können unsere App ohne Angabe personenbezogener Daten besuchen. Soweit auf unseren Seiten personenbezogene Daten (wie Name,
+                    Anschrift oder E-Mail Adresse) erhoben werden, erfolgt dies, soweit möglich, auf freiwilliger Basis. Diese Daten werden ohne Ihre
+                    ausdrückliche Zustimmung nicht an Dritte weitergegeben. Sofern zwischen Ihnen und uns ein Vertragsverhältnis begründet, inhaltlich
+                    ausgestaltet oder geändert werden soll oder Sie an uns eine Anfrage stellen, erheben und verwenden wir personenbezogene Daten von
+                    Ihnen, soweit dies zu diesen Zwecken erforderlich ist (Bestandsdaten). Wir erheben, verarbeiten und nutzen personenbezogene Daten
+                    soweit dies erforderlich ist, um Ihnen die Inanspruchnahme des Webangebots zu ermöglichen (Nutzungsdaten). Sämtliche personenbezogenen
+                    Daten werden nur solange gespeichert wie dies für den geannten Zweck (Bearbeitung Ihrer Anfrage oder Abwicklung eines Vertrags)
+                    erforderlich ist. Hierbei werden steuer- und handelsrechtliche Aufbewahrungsfristen berücksichtigt. Auf Anordnung der zuständigen
+                    Stellen dürfen wir im Einzelfall Auskunft über diese Daten (Bestandsdaten) erteilen, soweit dies für Zwecke der Strafverfolgung,
+                    zur Gefahrenabwehr, zur Erfüllung der gesetzlichen Aufgaben der Verfassungsschutzbehörden oder des Militärischen Abschirmdienstes
+                    oder zur Durchsetzung der Rechte am geistigen Eigentum erforderlich ist.</p>
+                <p>
+                    <strong>Auskunftsrecht</strong><br />
+                    Sie haben das jederzeitige Recht, sich unentgeltlich und unverzüglich über die zu Ihrer Person erhobenen Daten zu erkundigen. Sie
+                    haben das jederzeitige Recht, Ihre Zustimmung zur Verwendung Ihrer angegeben persönlichen Daten mit Wirkung für die Zukunft zu
+                    widerrufen. Zur Auskunftserteilung wenden Sie sich bitte an den Anbieter unter den Kontaktdaten im Impressum.
+                </p>
+        </div>
+
+    </article><!-- /content -->
+
+    <!---------------------------------------------------------------------------------------------->
+    <!-- FOOTER -->
+    <!---------------------------------------------------------------------------------------------->
+    <footer data-role="footer" class="ui-footer ui-bar-c" role="contentinfo">
+
+        <h6>&copy; 2015 by immoMobile</h6>
+
+    </footer><!-- /footer -->
+
+</section><!-- /page -->
+
+</body>
+
+</html>
